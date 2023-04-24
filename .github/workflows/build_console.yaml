@@ -1,0 +1,57 @@
+name: console-release-build
+run-name: Build the console code
+on:
+  schedule:
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug
+      tags:
+        description: 'Test scenario tags'
+        required: false
+        type: boolean
+      environment:
+        description: 'Environment to run tests against'
+        type: environment
+        required: false
+
+jobs:
+  create-console-build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Node/JS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.18.0
+      - run: node -v
+
+      - name: Install the yarn with npm
+        run: npm install -g yarn
+        
+      - name: Install latest golang version  
+        uses: actions/setup-go@v3
+        with:
+          go-version: ">=1.18.0"
+          check-latest: true
+      - run: go version
+
+      - name: Build the console frontend and backend 
+        run: ./.github/scripts/build_console.sh
+        shell: bash
+        env:
+          IBMCLOUD_API_KEY: ${{ secrets.IBMCLOUD_API_KEY }}
+          IBMCLOUD_COS_CRN: ${{ secrets.IBMCLOUD_COS_CRN }}
+          IBMCLOUD_RESOURCE_GROUP: upi-resource-group
+          IBMCLOUD_COS_BUCKET: console-e2e
+          IBMCLOUD_REGION: jp-tok
+

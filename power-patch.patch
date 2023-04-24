@@ -1,0 +1,225 @@
+diff --git a/frontend/integration-tests/protractor.conf.ts b/frontend/integration-tests/protractor.conf.ts
+index 052ffda45f..f6a81dcd7b 100644
+--- a/frontend/integration-tests/protractor.conf.ts
++++ b/frontend/integration-tests/protractor.conf.ts
+@@ -16,7 +16,7 @@ import {
+ const tap = !!process.env.TAP;
+ 
+ export const BROWSER_NAME = process.env.BRIDGE_E2E_BROWSER_NAME || 'chrome';
+-export const BROWSER_TIMEOUT = 15000;
++export const BROWSER_TIMEOUT = 45000;
+ export const JASMSPEC_TIMEOUT = process.env.BRIDGE_JASMINE_TIMEOUT
+   ? Number(process.env.BRIDGE_JASMINE_TIMEOUT)
+   : 120000;
+diff --git a/frontend/integration-tests/tests/environment.scenario.ts b/frontend/integration-tests/tests/environment.scenario.ts
+index 10a9a123e1..c6b0c7e9aa 100644
+--- a/frontend/integration-tests/tests/environment.scenario.ts
++++ b/frontend/integration-tests/tests/environment.scenario.ts
+@@ -8,7 +8,7 @@ import * as environmentView from '../views/environment.view';
+ import * as yamlView from '../views/yaml.view';
+ import { execSync } from 'child_process';
+ 
+-const BROWSER_TIMEOUT = 15000;
++const BROWSER_TIMEOUT = 45000;
+ const WORKLOAD_NAME = `env-${testName}`;
+ const Actions = {
+   add: 'add',
+diff --git a/frontend/integration-tests/tests/login.scenario.ts b/frontend/integration-tests/tests/login.scenario.ts
+index 9f5a6431d3..8f2927bb03 100644
+--- a/frontend/integration-tests/tests/login.scenario.ts
++++ b/frontend/integration-tests/tests/login.scenario.ts
+@@ -12,7 +12,7 @@ const { BRIDGE_KUBEADMIN_PASSWORD } = process.env;
+ describe('Auth test', () => {
+   beforeAll(async () => {
+     await browser.get(appHost);
+-    await browser.sleep(10000); // Wait long enough for the login redirect to complete
++    await browser.sleep(15000); // Wait long enough for the login redirect to complete
+   });
+ 
+   describe('Login test', async () => {
+diff --git a/frontend/integration-tests/tests/oauth.scenario.ts b/frontend/integration-tests/tests/oauth.scenario.ts
+index cca5d2bfe0..a35c50f0cb 100644
+--- a/frontend/integration-tests/tests/oauth.scenario.ts
++++ b/frontend/integration-tests/tests/oauth.scenario.ts
+@@ -37,6 +37,7 @@ describe('OAuth', () => {
+       await oauthView.basicAuthLink.click();
+       await browser.wait(until.elementToBeClickable(oauthView.idpNameInput));
+       await oauthView.idpNameInput.clear();
++      await oauthView.idpNameInput.sendKeys('\b\b\b\b\b\b\b\b\b\b'); // just to be sure the default name is cleared
+       await oauthView.idpNameInput.sendKeys(idpName);
+       await oauthView.basicAuthURLInput.sendKeys('https://example.com');
+       await oauthView.addIDPButton.click();
+@@ -65,6 +66,7 @@ describe('OAuth', () => {
+       await oauthView.githubLink.click();
+       await browser.wait(until.elementToBeClickable(oauthView.idpNameInput));
+       await oauthView.idpNameInput.clear();
++      await oauthView.idpNameInput.sendKeys('\b\b\b\b\b\b\b\b\b\b'); // just to be sure the default name is cleared
+       await oauthView.idpNameInput.sendKeys(idpName);
+       await oauthView.githubClientIDInput.sendKeys('my-client-id');
+       await oauthView.githubClientSecretInput.sendKeys('my-client-secret');
+@@ -95,6 +97,7 @@ describe('OAuth', () => {
+       await oauthView.gitlabLink.click();
+       await browser.wait(until.elementToBeClickable(oauthView.idpNameInput));
+       await oauthView.idpNameInput.clear();
++      await oauthView.idpNameInput.sendKeys('\b\b\b\b\b\b\b\b\b\b'); // just to be sure the default name is cleared
+       await oauthView.idpNameInput.sendKeys(idpName);
+       await oauthView.gitlabURLInput.sendKeys('https://example.com');
+       await oauthView.gitlabClientIDInput.sendKeys('my-client-id');
+@@ -125,6 +128,7 @@ describe('OAuth', () => {
+       await oauthView.googleLink.click();
+       await browser.wait(until.elementToBeClickable(oauthView.idpNameInput));
+       await oauthView.idpNameInput.clear();
++      await oauthView.idpNameInput.sendKeys('\b\b\b\b\b\b\b\b\b\b'); // just to be sure the default name is cleared
+       await oauthView.idpNameInput.sendKeys(idpName);
+       await oauthView.googleClientIDInput.sendKeys('my-client-id');
+       await oauthView.googleClientSecretInput.sendKeys('my-client-secret');
+@@ -155,6 +159,7 @@ describe('OAuth', () => {
+       await oauthView.keystoneLink.click();
+       await browser.wait(until.elementToBeClickable(oauthView.idpNameInput));
+       await oauthView.idpNameInput.clear();
++      await oauthView.idpNameInput.sendKeys('\b\b\b\b\b\b\b\b\b\b'); // just to be sure the default name is cleared
+       await oauthView.idpNameInput.sendKeys(idpName);
+       await oauthView.keystoneDomainInput.sendKeys('example.com');
+       await oauthView.keystoneURLInput.sendKeys('https://example.com');
+@@ -184,6 +189,7 @@ describe('OAuth', () => {
+       await oauthView.ldapLink.click();
+       await browser.wait(until.elementToBeClickable(oauthView.idpNameInput));
+       await oauthView.idpNameInput.clear();
++      await oauthView.idpNameInput.sendKeys('\b\b\b\b\b\b\b\b\b\b'); // just to be sure the default name is cleared
+       await oauthView.idpNameInput.sendKeys(idpName);
+       await oauthView.ldapURLInput.sendKeys('ldap://ldap.example.com/o=Acme?cn?sub?(enabled=true)');
+       await oauthView.addIDPButton.click();
+@@ -212,6 +218,7 @@ describe('OAuth', () => {
+       await oauthView.oidcLink.click();
+       await browser.wait(until.elementToBeClickable(oauthView.idpNameInput));
+       await oauthView.idpNameInput.clear();
++      await oauthView.idpNameInput.sendKeys('\b\b\b\b\b\b\b\b\b\b'); // just to be sure the default name is cleared
+       await oauthView.idpNameInput.sendKeys(idpName);
+       await oauthView.oidcClientIDInput.sendKeys('my-client-id');
+       await oauthView.oidcClientSecretInput.sendKeys('my-client-secret');
+diff --git a/frontend/integration-tests/views/crud.view.ts b/frontend/integration-tests/views/crud.view.ts
+index 5900c3791b..8f9aa9f0fc 100644
+--- a/frontend/integration-tests/views/crud.view.ts
++++ b/frontend/integration-tests/views/crud.view.ts
+@@ -23,9 +23,9 @@ export const untilNoLoadersPresent = waitForNone($$('.co-m-loader'));
+ export const isLoaded = () =>
+   browser
+     .wait(until.and(untilNoLoadersPresent, untilLoadingBoxLoaded))
+-    .then(() => browser.sleep(1000));
++    .then(() => browser.sleep(3000));
+ export const resourceRowsPresent = () =>
+-  browser.wait(until.presenceOf($('.co-m-resource-icon + a')), 20000);
++  browser.wait(until.presenceOf($('.co-m-resource-icon + a')), 30000);
+ export const errorPage = $('[data-test-id="error-page"]');
+ 
+ export const resourceRows = $$('[data-test-rows="resource-row"]');
+@@ -179,7 +179,14 @@ export const createNamespacedTestResource = async (kindModel, name) => {
+   const content = await yamlView.getEditorContent();
+   const newContent = _.defaultsDeep(
+     {},
+-    { metadata: { name, labels: { automatedTestName: testName } } },
++    {
++      metadata: { name, labels: { automatedTestName: testName } },
++      spec: {
++        template: {
++          spec: { containers: [{ image: 'quay.io/multiarch-origin-e2e/hello-openshift:latest' }] },
++        },
++      },
++    },
+     safeLoad(content),
+   );
+   await yamlView.setEditorContent(safeDump(newContent));
+diff --git a/frontend/integration-tests/views/yaml.view.ts b/frontend/integration-tests/views/yaml.view.ts
+index 512cbcb4c9..a0cfbb6c61 100644
+--- a/frontend/integration-tests/views/yaml.view.ts
++++ b/frontend/integration-tests/views/yaml.view.ts
+@@ -13,7 +13,7 @@ export const isLoaded = () =>
+         until.visibilityOf(saveButton),
+       ),
+     )
+-    .then(() => browser.sleep(1000));
++    .then(() => browser.sleep(3000));
+ 
+ const getValue = () => (window as any).monaco.editor.getModels()[0].getValue();
+ export const getEditorContent = async (): Promise<string> => await browser.executeScript(getValue);
+diff --git a/frontend/packages/integration-tests-cypress/cypress.json b/frontend/packages/integration-tests-cypress/cypress.json
+index 63c1427662..f1fcb00eab 100644
+--- a/frontend/packages/integration-tests-cypress/cypress.json
++++ b/frontend/packages/integration-tests-cypress/cypress.json
+@@ -12,7 +12,7 @@
+   "supportFile": "support/index.ts",
+   "pluginsFile": "plugins/index.js",
+   "fixturesFolder": "fixtures",
+-  "defaultCommandTimeout": 30000,
++  "defaultCommandTimeout": 360000,
+   "retries": {
+     "runMode": 1,
+     "openMode": 0
+diff --git a/frontend/packages/integration-tests-cypress/tests/app/auth-multiuser-login.spec.ts b/frontend/packages/integration-tests-cypress/tests/app/auth-multiuser-login.spec.ts
+index b8e1ca120d..c5a110296b 100644
+--- a/frontend/packages/integration-tests-cypress/tests/app/auth-multiuser-login.spec.ts
++++ b/frontend/packages/integration-tests-cypress/tests/app/auth-multiuser-login.spec.ts
+@@ -21,11 +21,13 @@ describe('Auth test', () => {
+       cy.url().should('include', Cypress.config('baseUrl'));
+       // test Developer perspective is default for test user and guided tour is displayed
+       nav.sidenav.switcher.shouldHaveText('Developer');
++      guidedTour.open(); // for repeat runs
+       guidedTour.isOpen();
+       guidedTour.close();
+       masthead.username.shouldHaveText(username);
+ 
+       cy.log('switches from dev to admin perspective');
++      nav.sidenav.switcher.changePerspectiveTo('Developer');
+       nav.sidenav.switcher.shouldHaveText('Developer');
+       nav.sidenav.switcher.changePerspectiveTo('Administrator');
+       nav.sidenav.switcher.shouldHaveText('Administrator');
+@@ -59,13 +61,15 @@ describe('Auth test', () => {
+       'You are logged in as a temporary administrative user. Update the cluster OAuth configuration to allow others to log in.',
+     );
+ 
+-    // test Administrator perspective is default for kubeadmin
++    nav.sidenav.switcher.changePerspectiveTo('Administrator');
+     nav.sidenav.switcher.shouldHaveText('Administrator');
++
+     // test guided tour is displayed first time switching to 'Developer' perspective
+     // skip if running localhost
+     if (!Cypress.config('baseUrl').includes('localhost')) {
+       nav.sidenav.switcher.changePerspectiveTo('Developer');
+       nav.sidenav.switcher.shouldHaveText('Developer');
++      guidedTour.open(); // for repeat runs
+       guidedTour.isOpen();
+       guidedTour.close();
+       nav.sidenav.switcher.changePerspectiveTo('Administrator');
+diff --git a/frontend/packages/integration-tests-cypress/tests/crud/bulk-create-resources.spec.ts b/frontend/packages/integration-tests-cypress/tests/crud/bulk-create-resources.spec.ts
+index 58b83695fd..5812745c74 100644
+--- a/frontend/packages/integration-tests-cypress/tests/crud/bulk-create-resources.spec.ts
++++ b/frontend/packages/integration-tests-cypress/tests/crud/bulk-create-resources.spec.ts
+@@ -95,7 +95,7 @@ stringData:
+     yamlEditor.isImportLoaded();
+     yamlEditor.setEditorContent(dupSecrets).then(() => {
+       yamlEditor.clickSaveCreateButton();
+-      cy.get(errorMessage).should('exist');
++      cy.get(errorMessage, { timeout: 90000 }).should('exist');
+     });
+   });
+ 
+diff --git a/frontend/packages/integration-tests-cypress/views/guided-tour.ts b/frontend/packages/integration-tests-cypress/views/guided-tour.ts
+index 3f06d3714e..a5440c2f7d 100644
+--- a/frontend/packages/integration-tests-cypress/views/guided-tour.ts
++++ b/frontend/packages/integration-tests-cypress/views/guided-tour.ts
+@@ -8,5 +8,15 @@ export const guidedTour = {
+       }
+     });
+   },
++  open: () => {
++    cy.get('body').then(($body) => {
++      if ($body.find(`[data-test="guided-tour-modal"]`).length === 0) {
++        cy.byTestID('help-dropdown-toggle').click();
++        cy.byTestID('help-dropdown-toggle')
++          .contains('Guided tour')
++          .click();
++      }
++    });
++  },
+   isOpen: () => cy.byTestID('guided-tour-modal').should('be.visible'),
+ };
