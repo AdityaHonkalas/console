@@ -1,24 +1,25 @@
 #!/usr/bin/env bash
 
-echo "Apply a git patch for ppc64le"
-git apply power-patch.patch
+set -x
 
-echo "Build console code"
-./build.sh
+OCP_RELEASES=("release-4.12" "release-4.13" "release-4.14" "release-4.15" "release-4.16")
 
-export CONSOLE_BUILT_DATE=$(date +%Y%m%d)
-export FILE_PATH=$PWD"/console-built-${CONSOLE_BUILT_DATE}.tgz"
+CONSOLE_BUILT_DATE=$(date +%Y%m%d)
 
-echo "Creating console code tar console-built-${CONSOLE_BUILT_DATE}.tgz"
-tar -czvf console-built-${CONSOLE_BUILT_DATE}.tgz .
+PATCH_FILE_PATH=/home/runner/work/power-patch
+CONSOLE_BUILD_TAR=/home/runner/work/console-tar
 
-# create a cloud connection to IBM cloud COS to upload the created console tarball
+# create a patch directory and store power-patch.patch
+mkdir $PATCH_FILE_PATH
+cp power-patch.patch $PATCH_FILE_PATH
+
+mkdir $CONSOLE_BUILD_TAR
 
 echo "Installing IBM cloud CLI"
 curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
 
 echo "Login to the IBM cloud with the cloud API key"
-echo $IBMCLOUD_REGION | ibmcloud login -g ${IBMCLOUD_RESOURCE_GROUP}
+echo "4" | ibmcloud login -g ${IBMCLOUD_RESOURCE_GROUP}
 
 echo "Install IBM Cloud Object Storage plugin"
 ibmcloud plugin install cloud-object-storage
@@ -30,7 +31,20 @@ ibmcloud cos config crn --list
 
 ibmcloud cos buckets
 
-echo "Upload the console tar ball to COS bucket"
-ibmcloud cos object-put --bucket $IBMCLOUD_COS_BUCKET --key console-built-${CONSOLE_BUILT_DATE} --body $FILE_PATH --region $IBMCLOUD_REGION
+for release_branch in "${OCP_RELEASES[@]}"
+do
+
+    git checkout $release_branch
+    git apply $PATCH_FILE_PATH/power-patch.patch
+    echo "Building the code..."
+    ./build.sh
+    echo "Creating a tar zip of build code..."
+    tar -czvf "$CONSOLE_BUILD_TAR/console-built-$release_branch-$CONSOLE_BUILT_DATE.tgz" .
+    echo "Upload the console tar ball to COS bucket"
+    ibmcloud cos object-put --bucket $IBMCLOUD_COS_BUCKET --key console-built-$release_branch-$CONSOLE_BUILT_DATE.tgz --body "$CONSOLE_BUILD_TAR/console-built-$release_branch-$CONSOLE_BUILT_DATE.tgz" --region $IBMCLOUD_REGION
+    git reset --hard
+
+done
+
 
 

@@ -1,0 +1,21 @@
+name: Sync to upstream
+on:
+  schedule:
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+
+env:
+  UPSTREAM_REPO: https://github.com/openshift/console.git
+  GITHUB_PAT: "${{ secrets.PAT }}"
+
+jobs:
+  sync-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "actions/checkout@v3"
+        with:
+          fetch-depth: 0
+
+      - name: Fetch the upstream and rebase
+        run: ./.github/scripts/sync_upstream.sh
+        
