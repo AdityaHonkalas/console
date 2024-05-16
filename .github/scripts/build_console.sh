@@ -2,7 +2,7 @@
 
 set -x
 
-OCP_RELEASES=("release-4.12" "release-4.13" "release-4.14" "release-4.15" "release-4.16")
+OCP_RELEASES=("release-4.16")
 
 CONSOLE_BUILT_DATE=$(date +%Y%m%d)
 
