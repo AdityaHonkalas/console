@@ -2,7 +2,7 @@
 
 set -x
 
-OCP_RELEASES=("release-4.10" "release-4.11" "release-4.12" "release-4.13" "release-4.14")
+OCP_RELEASES=("release-4.12" "release-4.13" "release-4.14" "release-4.15" "release-4.16")
 
 # Set global config to add user details
 git config --global user.email "aditya.honkalas@ibm.com"

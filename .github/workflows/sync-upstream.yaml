@@ -1,8 +1,6 @@
 name: Sync to upstream
-on:
-  schedule:
-    - cron: "0 0 * * 1"
-  workflow_dispatch:
+
+run_name: Sync branches to upstream
 
 env:
   UPSTREAM_REPO: https://github.com/openshift/console.git
